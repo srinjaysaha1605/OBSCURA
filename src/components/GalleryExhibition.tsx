@@ -3,7 +3,7 @@ import { useGalleryCategories } from '../data/galleryStore';
 import { InkTrailCanvas } from './InkTrailCanvas';
 import { AdminPanel } from './AdminPanel';
 import { AudioPlayer } from './AudioPlayer';
-import { Download } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface GalleryExhibitionProps {
   shouldPlayAudio?: boolean;
@@ -19,6 +19,19 @@ export const GalleryExhibition: React.FC<GalleryExhibitionProps> = ({ shouldPlay
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const isScrollingRef = useRef<boolean>(false);
+  const navContainerRef = useRef<HTMLDivElement | null>(null);
+  const activeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Auto-scroll active category number into view on mobile navigation / swipe
+  useEffect(() => {
+    if (activeButtonRef.current) {
+      activeButtonRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [activeIndex]);
 
   // Global Ctrl + Shift + K shortcut to open Admin Modal
   useEffect(() => {
@@ -284,30 +297,45 @@ export const GalleryExhibition: React.FC<GalleryExhibitionProps> = ({ shouldPlay
       </main>
 
       {/* FOOTER: Numbered Navigation & Thin Progress Bar */}
-      <footer className="relative z-30 border-t border-neutral-900/80 bg-[#080808]/90 backdrop-blur-md px-6 py-4 md:px-12">
+      <footer className="relative z-30 border-t border-neutral-900/80 bg-[#080808]/90 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-3.5 md:px-12">
         {categories.length > 0 && (
-          <>
+          <div className="max-w-2xl mx-auto flex flex-col items-center gap-2">
             {/* Progress bar indicator */}
-            <div className="w-full h-0.5 bg-neutral-900 mb-3 rounded-full overflow-hidden max-w-xs mx-auto">
+            <div className="w-full h-0.5 bg-neutral-900 rounded-full overflow-hidden max-w-xs mx-auto">
               <div
                 className="h-full bg-neutral-300 transition-all duration-300 ease-out"
                 style={{ width: `${((activeIndex + 1) / categories.length) * 100}%` }}
               />
             </div>
 
-            <div className="flex items-center justify-center overflow-x-auto no-scrollbar w-full py-1 px-2">
-              {/* Minimal Number Switches */}
-              <nav className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Navigation Bar with Chevron controls & auto-scrolling numbers */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 w-full justify-center max-w-full">
+              {/* Prev Button */}
+              <button
+                onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : categories.length - 1))}
+                className="p-1.5 rounded-xs bg-neutral-900/90 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors border border-neutral-800/80 shrink-0 focus:outline-none focus:ring-1 focus:ring-neutral-400 cursor-pointer"
+                aria-label="Previous artwork"
+                title="Previous Artwork"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Scrollable Number Strip without flex clipping */}
+              <div
+                ref={navContainerRef}
+                className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 max-w-[calc(100vw-100px)] sm:max-w-full justify-start sm:justify-center"
+              >
                 {categories.map((cat, idx) => {
                   const isActive = idx === activeIndex;
                   return (
                     <button
                       key={cat.id}
+                      ref={isActive ? activeButtonRef : null}
                       onClick={() => setActiveIndex(idx)}
-                      className={`w-8 h-8 rounded-xs text-xs font-mono-code transition-all focus:outline-none focus:ring-1 focus:ring-neutral-400 ${
+                      className={`min-w-[2.1rem] h-8 px-2 rounded-xs text-xs font-mono-code transition-all shrink-0 flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-neutral-400 cursor-pointer ${
                         isActive
-                          ? 'bg-neutral-200 text-black font-semibold shadow-sm'
-                          : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800'
+                          ? 'bg-neutral-200 text-black font-semibold shadow-sm scale-105'
+                          : 'bg-neutral-900/60 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800/50'
                       }`}
                       aria-label={`Go to item ${cat.number}`}
                       aria-current={isActive ? 'page' : undefined}
@@ -316,9 +344,19 @@ export const GalleryExhibition: React.FC<GalleryExhibitionProps> = ({ shouldPlay
                     </button>
                   );
                 })}
-              </nav>
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => setActiveIndex((prev) => (prev < categories.length - 1 ? prev + 1 : 0))}
+                className="p-1.5 rounded-xs bg-neutral-900/90 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors border border-neutral-800/80 shrink-0 focus:outline-none focus:ring-1 focus:ring-neutral-400 cursor-pointer"
+                aria-label="Next artwork"
+                title="Next Artwork"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
-          </>
+          </div>
         )}
       </footer>
 
