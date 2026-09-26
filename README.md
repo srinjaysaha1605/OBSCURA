@@ -29,49 +29,12 @@ Each artwork is revealed through dark monochrome dither stippling and interactiv
 
 ---
 
-## 📁 Custom Audio Setup
-
-To use your own custom background track:
-
-1. Drop your audio file into the public directory:
-   ```text
-   /public/music/background.mp3
-   ```
-2. The exhibition will automatically stream and loop your custom audio upon clicking the entry sigil.
-
----
-
 ## 🛠️ Tech Stack
 
 - **Framework**: React 19 + TypeScript + Vite
 - **Styling**: Tailwind CSS (Monochrome Dark Palette)
 - **Icons**: Lucide React
 - **Backend / Persistence (Optional)**: Supabase JS Client (configured with `persistSession: false`)
-
----
-
-## 🚀 Quick Start
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/your-username/obscura.git
-   cd obscura
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Run Development Server**:
-   ```bash
-   npm run dev
-   ```
-
-4. **Build for Production**:
-   ```bash
-   npm run build
-   ```
 
 ---
 
