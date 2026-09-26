@@ -123,89 +123,109 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             }`}
           />
 
-          {/* SVG Sigil matching reference design */}
+          {/* SVG Sigil matching user uploaded graphic */}
           <svg
-            width="200"
-            height="200"
+            width="220"
+            height="220"
             viewBox="0 0 200 200"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-all duration-500"
+            className="relative z-10 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all duration-500 group-hover:drop-shadow-[0_0_30px_rgba(255,255,255,0.35)]"
           >
             <defs>
-              {/* Filter for ink brush texture & jitter */}
-              <filter id="ink-texture" x="-10%" y="-10%" width="120%" height="120%">
+              {/* Halftone / Dither Dot Pattern */}
+              <pattern id="sigil-dither" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
+                <circle cx="1.5" cy="1.5" r="0.8" fill="#FFFFFF" />
+              </pattern>
+
+              {/* Ink brush noise texture filter */}
+              <filter id="sigil-brush-noise" x="-20%" y="-20%" width="140%" height="140%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.8" xChannelSelector="R" yChannelSelector="G" />
               </filter>
+
+              <linearGradient id="needle-gradient" x1="100" y1="10" x2="100" y2="190" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.2" />
+                <stop offset="20%" stopColor="#FFFFFF" stopOpacity="0.9" />
+                <stop offset="50%" stopColor="#FFFFFF" stopOpacity="1" />
+                <stop offset="80%" stopColor="#FFFFFF" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.2" />
+              </linearGradient>
+
+              <linearGradient id="crescent-fade-left" x1="30" y1="100" x2="95" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                <stop offset="60%" stopColor="#E5E5E5" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.4" />
+              </linearGradient>
+
+              <linearGradient id="crescent-fade-right" x1="170" y1="100" x2="105" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                <stop offset="60%" stopColor="#E5E5E5" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.4" />
+              </linearGradient>
             </defs>
 
-            {/* Main Organic Circle (Rough Brush Stroke Ring) */}
-            <circle
-              cx="100"
-              cy="105"
-              r="48"
-              stroke="#E5E5E5"
-              strokeWidth="5.5"
-              strokeLinecap="round"
-              fill="none"
-              filter="url(#ink-texture)"
-              className="transition-all duration-500 group-hover:stroke-white"
-            />
-            {/* Secondary thin inner contour for ink depth */}
-            <circle
-              cx="100"
-              cy="105"
-              r="46.5"
-              stroke="#A3A3A3"
-              strokeWidth="1.2"
-              fill="none"
-              opacity="0.6"
-              filter="url(#ink-texture)"
-            />
+            {/* Left Crescent Moon Arc */}
+            <g filter="url(#sigil-brush-noise)">
+              {/* Outer thick crescent brush shape */}
+              <path
+                d="M 96 36 C 45 42 22 88 32 122 C 40 148 68 165 92 164 C 60 152 42 125 45 92 C 48 65 72 45 96 36 Z"
+                fill="url(#crescent-fade-left)"
+              />
+              {/* Dither halftone overlay */}
+              <path
+                d="M 96 36 C 45 42 22 88 32 122 C 40 148 68 165 92 164 C 60 152 42 125 45 92 C 48 65 72 45 96 36 Z"
+                fill="url(#sigil-dither)"
+                opacity="0.35"
+              />
+              {/* Inner bright crescent stroke */}
+              <path
+                d="M 90 40 C 50 48 30 85 38 118 C 45 142 70 158 88 158 C 62 146 48 122 50 92 C 52 68 70 50 90 40 Z"
+                fill="#FFFFFF"
+                opacity="0.9"
+              />
+            </g>
 
-            {/* Diagonal Slash Stroke (Bottom-Left to Top-Right) */}
+            {/* Right Crescent Moon Arc */}
+            <g filter="url(#sigil-brush-noise)">
+              {/* Outer thick crescent brush shape */}
+              <path
+                d="M 104 36 C 155 42 178 88 168 122 C 160 148 132 165 108 164 C 140 152 158 125 155 92 C 152 65 128 45 104 36 Z"
+                fill="url(#crescent-fade-right)"
+              />
+              {/* Dither halftone overlay */}
+              <path
+                d="M 104 36 C 155 42 178 88 168 122 C 160 148 132 165 108 164 C 140 152 158 125 155 92 C 152 65 128 45 104 36 Z"
+                fill="url(#sigil-dither)"
+                opacity="0.35"
+              />
+              {/* Inner bright crescent stroke */}
+              <path
+                d="M 110 40 C 150 48 170 85 162 118 C 155 142 130 158 112 158 C 138 146 152 122 150 92 C 148 68 130 50 110 40 Z"
+                fill="#FFFFFF"
+                opacity="0.9"
+              />
+            </g>
+
+            {/* Central Razor Needle / Spire */}
             <path
-              d="M 52 162 L 138 52"
-              stroke="#F5F5F5"
-              strokeWidth="14"
-              strokeLinecap="round"
-              filter="url(#ink-texture)"
-              className="transition-all duration-500 group-hover:stroke-white"
+              d="M 100 10 L 104 100 L 100 190 L 96 100 Z"
+              fill="url(#needle-gradient)"
+              className="transition-all duration-500 group-hover:scale-y-105 origin-center"
             />
-            {/* Dark core line inside slash for brush density */}
             <path
-              d="M 58 156 L 134 58"
-              stroke="#080808"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              filter="url(#ink-texture)"
-              opacity="0.75"
+              d="M 100 10 L 102 100 L 100 190 L 98 100 Z"
+              fill="#FFFFFF"
             />
 
-            {/* Dither / Halftone Dots Array dissolving upwards right */}
-            <g className={`transition-all duration-500 ${isHovered ? 'opacity-100 translate-x-1 -translate-y-1' : 'opacity-85'}`}>
-              {/* Row 1 - dense near brush tip */}
-              <circle cx="137" cy="53" r="2.2" fill="#E5E5E5" />
-              <circle cx="142" cy="47" r="2.0" fill="#E5E5E5" />
-              <circle cx="145" cy="51" r="1.8" fill="#E5E5E5" />
-              <circle cx="148" cy="43" r="1.8" fill="#E5E5E5" />
-
-              {/* Row 2 - medium dispersion */}
-              <circle cx="151" cy="40" r="1.6" fill="#D4D4D4" />
-              <circle cx="155" cy="44" r="1.5" fill="#D4D4D4" />
-              <circle cx="154" cy="35" r="1.5" fill="#D4D4D4" />
-              <circle cx="160" cy="38" r="1.4" fill="#D4D4D4" />
-              <circle cx="159" cy="30" r="1.3" fill="#D4D4D4" />
-
-              {/* Row 3 - fine stippling spray */}
-              <circle cx="165" cy="33" r="1.2" fill="#A3A3A3" />
-              <circle cx="168" cy="27" r="1.2" fill="#A3A3A3" />
-              <circle cx="171" cy="30" r="1.0" fill="#A3A3A3" />
-              <circle cx="174" cy="24" r="1.0" fill="#A3A3A3" />
-              <circle cx="178" cy="22" r="0.9" fill="#737373" />
-              <circle cx="182" cy="18" r="0.8" fill="#737373" />
-              <circle cx="186" cy="15" r="0.7" fill="#525252" />
+            {/* Fine Dither Stipple Particles along outer curves */}
+            <g opacity="0.75" className={`transition-all duration-500 ${isHovered ? 'scale-110' : ''} origin-center`}>
+              <circle cx="30" cy="110" r="1.2" fill="#FFFFFF" />
+              <circle cx="27" cy="118" r="0.9" fill="#E5E5E5" />
+              <circle cx="34" cy="128" r="1.1" fill="#D4D4D4" />
+              <circle cx="170" cy="110" r="1.2" fill="#FFFFFF" />
+              <circle cx="173" cy="118" r="0.9" fill="#E5E5E5" />
+              <circle cx="166" cy="128" r="1.1" fill="#D4D4D4" />
             </g>
           </svg>
         </button>
