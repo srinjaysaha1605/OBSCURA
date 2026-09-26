@@ -1,6 +1,6 @@
 {
-  "name": "Dither Art Exhibition & Portfolio",
-  "description": "An immersive monochrome dither-art gallery exhibition with custom ink-trail interaction and high-contrast typography.",
+  "name": "Obscura - L’image se révèle à l’encre.",
+  "description": "Obscura - L’image se révèle à l’encre. An interactive monochrome exhibition experience with custom ink-trail interaction and high-contrast typography.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
